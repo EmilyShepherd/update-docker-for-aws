@@ -70,7 +70,9 @@ make bzImage
 This will take a while to compile, while it's going you can continue to
 the next steps.
 
-### Finding your current AMI
+## Creating a new Image
+
+### Find the current image
 
 First we need to find out which AMI your stack is using. This is
 different depending on what region you are starting instances in. You
@@ -124,3 +126,52 @@ it. You may get an error to say it hasn't finished starting yet, but
 just keep clicking "Yes, Stop" until it lets you. The reason we want to
 do this is because we're going to detach the volume from it anyway.
 
+Once its stopped, go to the instance information and click on
+`/dev/xvdb` next to "Root Device". In the popup, click the `vol-...`
+link to view the volume for this instance.
+
+Right click the volume and detatch it. This should only take a second,
+but you may need to refresh to see that it has finished. Once it has
+done right click it again to attach it to your work server that we
+created above. The device name doesn't matter particularly, it is likely
+to be `/dev/sdf`.
+
+### Copy the new kernel onto the volume
+
+Back in your SSH terminal on the worker server, we have wait for the
+compilation to finish. Once it has done, let's copy the new linux kernel
+onto the device.
+
+Mount the docker-for-aws volume that we attached in the previous step:
+
+```
+sudo mount /dev/xvdf1 /mnt
+```
+
+Copy your compiled kernel onto the volume:
+
+```
+sudo cp ~/linux-4.14.13/arch/x86/boot/bzImage /mnt/vmlinuz64
+```
+
+We now have a clean and updated volume, now unmount it again:
+
+```
+sudo umount /mnt
+```
+
+### Create the AMI
+
+Back in the volume view on the AWS Console, right click and detach the
+volume again. Again, once it's done and you've refreshed, right click
+to attach it. This time we'll attach it to the docker node we created
+and immediately shut down.
+
+This time the device name *is* important, as Docker for AWS has been
+configured to use a specific one. Enter `/dev/xvdb`.
+
+Head over to the shut down docker instance, right click it and choose
+Image > Create Image. The name and description are up to you, but in
+the table, **make sure you tick the "Delete on Termination"** checkbox.
+
+Hurray you have a new AMI!
