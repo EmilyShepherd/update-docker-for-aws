@@ -184,3 +184,65 @@ Image > Create Image. The name and description are up to you, but in
 the table, **make sure you tick the "Delete on Termination"** checkbox.
 
 Hurray you have a new AMI!
+
+### Cleanup
+
+Terminate the two instances you made, and then delete the volume we were
+working with. These are no longer needed.
+
+## Setting up your stack to use your new image
+
+### Make new Launch Configurations
+
+Head on over to your "Launch Configurations" page. You should see two in
+there:
+
+```
+[STACK NAME]-NodeLaunchConfig17090ceaws1-1[RANDOM GARBAGE]
+[STACK NAME]-ManagerLaunchConfig17090ceaws1-1[RANDOM GARBAGE]
+```
+
+For each of these, we need to do the following steps.
+
+Right click and choose "Copy launch configuaration"; it will now take
+you to a screen that looks similar to the launch instance pages. You'll
+notice that "Moby Linux 17.09.0-ce-aws1 stable" is the selected AMI, so
+we need to change that with "Edit AMI" on the right. In the search page,
+go to My AMIs and search for the AMI you created in the previous step.
+
+When you select the AMI, Amazon will warn you that some things will
+reset, choose "Yes" and continue.
+
+On the Instance Type page, don't change anything (unless you want a
+different size of instance than you had before) and click next.
+
+On the next page, keep all the config the same, although you may want to
+give the launch configuration a nicer name, and click next.
+
+The volumes should all be set up correctly, with the exception that the
+size of the root volume as reset down to 1GB which is too small, change
+that to whatever size volume you want and click next.
+
+On the security group page **do not change anything**. Click review and
+finally create the Launch Configuration with your SSH key of choice.
+
+### Use these launch configurations
+
+Go to your "Auto Scaling Groups" page, you should see two in there:
+
+```
+[STACK NAME]-NodeAsg-[RANDOM GARBAGE]
+[STACK NAME]-ManagerAsg-[RANDOM GARBAGE]
+```
+
+For each one edit it and simply change the Launch Configration to the
+relavent one you created in the previous step.
+
+From this point on, any *new* nodes or managers started to your swarm
+should use the updated linux kernel.
+
+## TODOs
+
+* Clean way of restarting / updating the old nodes
+* Update the rest of the OS too (as it's on Alpine 3.5, which is pretty
+old)
