@@ -272,6 +272,8 @@ should use the updated Linux kernel.
 * Clean way of restarting / updating the old nodes
 * Update the rest of the OS too (as it's on Alpine 3.5, which is pretty
 old)
+* Missing nfs_layout_flexfiles module, so the kernel no longer supports
+NFS FlexFiles. Can be fixed alongside updating the OS.
 
 
 ## Disclaimer
