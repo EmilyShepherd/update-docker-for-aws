@@ -28,8 +28,14 @@ should be the same as the one I've provided)
 
 ### Create a work server
 
+We need a seperate server to work with the root volume, download the
+linux source files, and compile them so I'd recommend making a tempoary
+one just for this.
+
 Pretty much any server will work here, so I'm not going to be too
 specific, but I launched t2.nano Amazon Linux Instance.
+
+You may want to give it a name (I called it "work server").
 
 ### Do the compilation
 
@@ -116,15 +122,18 @@ search for your the ami id that we found in the step above.
 
 Click it and launch it, this is going to be thrown away as soon as we
 have the volume, so just pick a t2.nano (or if you're still free tier
-eligible: t2.micro)
+eligible: t2.micro).
 
-Literally nothing else matters, so just click next then go straight to
-"Review and Launch" and Launch it. The SSH option doesn't matter either.
+None of the config on this instance really matters, as we're going to be
+shutting it down anyway, so just click next then go straight to
+"Review and Launch" and Launch it. (You may want to give it a name to
+make finding it later easier, otherwise just keep note of its instance
+id)
 
-Now, as it's launching immediately go to your instances page and stop
-it. You may get an error to say it hasn't finished starting yet, but
-just keep clicking "Yes, Stop" until it lets you. The reason we want to
-do this is because we're going to detach the volume from it anyway.
+Now immediately go to your instances page and stop it. You may get an
+error to say it hasn't finished starting yet, but just keep clicking
+"Yes, Stop" until it lets you. The reason we want to do this is because
+we're going to detach the volume from it anyway.
 
 Once its stopped, go to the instance information and click on
 `/dev/xvdb` next to "Root Device". In the popup, click the `vol-...`
